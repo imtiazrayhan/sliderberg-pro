@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { addFilter } from '@wordpress/hooks';
 import { Icon, grid, plus } from '@wordpress/icons';
-import { ProTypeCard } from './components/ProTypeCard';
+import { ProTypeCard } from '../components/ui/ProTypeCard';
 import type { ReactElement } from 'react';
 import { createBlock } from '@wordpress/blocks';
 import { dispatch, select } from '@wordpress/data';

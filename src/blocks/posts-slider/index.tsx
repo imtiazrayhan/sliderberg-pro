@@ -1,7 +1,8 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
-import { PostsSlider } from '../../../components/PostsSlider';
-import { PostsSliderSettings } from '../../../components/PostsSliderSettings';
+import { InspectorControls } from '@wordpress/block-editor';
+import { PostsSlider } from '../../components/sliders/PostsSlider';
+import { PostsSliderSettings } from './settings';
 import type { BlockEditProps } from '@wordpress/blocks';
 
 interface PostsSliderAttributes {
@@ -74,8 +75,10 @@ registerBlockType<PostsSliderAttributes>('sliderberg-pro/posts-slider', {
     edit: ({ attributes, setAttributes }: BlockEditProps<PostsSliderAttributes>): JSX.Element => {
         return (
             <>
+                <InspectorControls>
+                    <PostsSliderSettings attributes={attributes} setAttributes={setAttributes} />
+                </InspectorControls>
                 <PostsSlider attributes={attributes} />
-                <PostsSliderSettings attributes={attributes} setAttributes={setAttributes} />
             </>
         );
     },
