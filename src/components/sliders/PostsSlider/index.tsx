@@ -1,7 +1,6 @@
+// src/components/sliders/PostsSlider/index.tsx
 import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
-import { useSelect } from '@wordpress/data';
-import { store as coreStore } from '@wordpress/core-data';
 
 interface Post {
     id: number;
@@ -31,7 +30,7 @@ export const PostsSlider: React.FC<PostsSliderProps> = ({ attributes }) => {
         const fetchPosts = async () => {
             setLoading(true);
             try {
-                const response = await fetch(`/wp-json/wp/v2/${postType}?per_page=${numberOfPosts}&order=${order}`);
+                const response = await fetch(`/wp-json/wp/v2/${postType}?per_page=${numberOfPosts}&order=${order}&_embed=true`);
                 const data = await response.json();
                 
                 const formattedPosts = data.map((post: any) => ({
@@ -67,23 +66,34 @@ export const PostsSlider: React.FC<PostsSliderProps> = ({ attributes }) => {
         );
     }
 
+    // Render each post as a separate slide that will be handled by the parent slider
     return (
-        <div className="sliderberg-posts-slider">
-            {posts.map((post) => (
-                <div key={post.id} className="sliderberg-post-slide">
-                    {showFeaturedImage && post.featured_image && (
-                        <div className="sliderberg-post-image">
-                            <img src={post.featured_image} alt={post.title} />
-                        </div>
-                    )}
-                    {showTitle && (
-                        <h3 className="sliderberg-post-title" dangerouslySetInnerHTML={{ __html: post.title }} />
-                    )}
-                    {showExcerpt && (
-                        <div className="sliderberg-post-excerpt" dangerouslySetInnerHTML={{ __html: post.excerpt }} />
-                    )}
+        <>
+            {posts.map((post, index) => (
+                <div 
+                    key={post.id} 
+                    className="sliderberg-slide sliderberg-post-slide"
+                    data-slide-index={index}
+                    data-is-active={index === 0 ? 'true' : 'false'} // Mark first as active
+                    style={{
+                        display: index === 0 ? 'block' : 'none' // Only show first slide initially
+                    }}
+                >
+                    <div className="sliderberg-slide-content sliderberg-post-content">
+                        {showFeaturedImage && post.featured_image && (
+                            <div className="sliderberg-post-image">
+                                <img src={post.featured_image} alt={post.title} />
+                            </div>
+                        )}
+                        {showTitle && (
+                            <h3 className="sliderberg-post-title" dangerouslySetInnerHTML={{ __html: post.title }} />
+                        )}
+                        {showExcerpt && (
+                            <div className="sliderberg-post-excerpt" dangerouslySetInnerHTML={{ __html: post.excerpt }} />
+                        )}
+                    </div>
                 </div>
             ))}
-        </div>
+        </>
     );
-}; 
+};

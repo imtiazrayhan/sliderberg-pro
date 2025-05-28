@@ -1,3 +1,4 @@
+// src/blocks/posts-slider/index.tsx
 import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
 import { InspectorControls } from '@wordpress/block-editor';
@@ -5,6 +6,13 @@ import { useBlockProps } from '@wordpress/block-editor';
 import { PostsSlider } from '../../components/sliders/PostsSlider';
 import { PostsSliderSettings } from './settings';
 import type { BlockEditProps, BlockConfiguration } from '@wordpress/blocks';
+import { useEffect } from 'react';
+
+declare global {
+    interface Window {
+        updateSliderbergSlidesVisibility?: () => void;
+    }
+}
 
 interface PostsSliderAttributes {
     postType: string;
@@ -59,8 +67,19 @@ const blockConfig: BlockConfiguration<PostsSliderAttributes> = {
     } as BlockAttributes,
     edit: ({ attributes, setAttributes }: BlockEditProps<PostsSliderAttributes>): JSX.Element => {
         const blockProps = useBlockProps({
-            className: 'sliderberg-posts-slider-wrapper'
+            className: 'sliderberg-posts-slider-wrapper sliderberg-slides-container'
         });
+
+        // Trigger visibility update when posts change
+        useEffect(() => {
+            const timer = setTimeout(() => {
+                if (typeof window !== 'undefined' && window.updateSliderbergSlidesVisibility) {
+                    window.updateSliderbergSlidesVisibility();
+                }
+            }, 100); // Small delay to ensure posts are rendered
+
+            return () => clearTimeout(timer);
+        }, [attributes.postType, attributes.numberOfPosts, attributes.order]);
 
         return (
             <div {...blockProps}>
@@ -73,7 +92,7 @@ const blockConfig: BlockConfiguration<PostsSliderAttributes> = {
     },
     save: (): JSX.Element => {
         const blockProps = useBlockProps.save({
-            className: 'sliderberg-posts-slider-wrapper'
+            className: 'sliderberg-posts-slider-wrapper sliderberg-slides-container'
         });
 
         return (
