@@ -3,6 +3,8 @@ import { addFilter } from '@wordpress/hooks';
 import { Icon, grid, plus } from '@wordpress/icons';
 import { ProTypeCard } from './components/ProTypeCard';
 import type { ReactElement } from 'react';
+import { createBlock } from '@wordpress/blocks';
+import { dispatch, select } from '@wordpress/data';
 
 interface SliderType {
     id: string;
@@ -51,9 +53,32 @@ addFilter('sliderberg.sliderTypes', 'sliderberg-pro/addTypes', (types: SliderTyp
     return newTypes;
 });
 
-// Handle type selection
-addFilter('sliderberg.beforeTypeSelect', 'sliderberg-pro/handleTypeSelect', (type: any) => {
-    return type;
+// Handle type selection for pro types
+addFilter('sliderberg.beforeTypeSelect', 'sliderberg-pro/handleTypeSelect', (shouldProceed: boolean, typeId: string) => {
+    console.log('Admin filter running for type:', typeId);
+    
+    if (typeId === 'posts-slider') {
+        console.log('Creating posts slider block');
+        const selectedBlock = select('core/block-editor').getSelectedBlock();
+        console.log('Selected block:', selectedBlock);
+        
+        if (selectedBlock) {
+            const postsSliderBlock = createBlock('sliderberg-pro/posts-slider', {
+                postType: 'posts',
+                numberOfPosts: 5,
+                order: 'desc',
+                showFeaturedImage: true,
+                showTitle: true,
+                showExcerpt: true
+            });
+            console.log('Created posts slider block:', postsSliderBlock);
+
+            dispatch('core/block-editor').replaceBlock(selectedBlock.clientId, postsSliderBlock);
+            console.log('Replaced block');
+            return false;
+        }
+    }
+    return shouldProceed;
 });
 
 // Customize type card rendering

@@ -44,14 +44,25 @@ add_action('plugins_loaded', 'sliderberg_pro_init');
 
 // Register scripts and styles
 function sliderberg_pro_register_assets() {
+    // Register admin script
     wp_register_script(
-        'sliderberg-pro-editor',
-        SLIDERBERG_PRO_URL . 'build/index.js',
+        'sliderberg-pro-admin',
+        SLIDERBERG_PRO_URL . 'build/admin.js',
         array('wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-i18n'),
         SLIDERBERG_PRO_VERSION,
         true
     );
 
+    // Register block script
+    wp_register_script(
+        'sliderberg-pro-blocks',
+        SLIDERBERG_PRO_URL . 'build/blocks/posts-slider.js',
+        array('wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-i18n'),
+        SLIDERBERG_PRO_VERSION,
+        true
+    );
+
+    // Register styles
     wp_register_style(
         'sliderberg-pro-editor',
         SLIDERBERG_PRO_URL . 'build/index.css',
@@ -70,7 +81,8 @@ add_action('init', 'sliderberg_pro_register_assets');
 
 // Enqueue editor assets
 function sliderberg_pro_editor_assets() {
-    wp_enqueue_script('sliderberg-pro-editor');
+    wp_enqueue_script('sliderberg-pro-admin');
+    wp_enqueue_script('sliderberg-pro-blocks');
     wp_enqueue_style('sliderberg-pro-editor');
 }
 add_action('enqueue_block_editor_assets', 'sliderberg_pro_editor_assets');
