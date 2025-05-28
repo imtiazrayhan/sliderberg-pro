@@ -1,9 +1,10 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
+import { InspectorControls } from '@wordpress/block-editor';
+import { useBlockProps } from '@wordpress/block-editor';
 import { PostsSlider } from '../../components/sliders/PostsSlider';
 import { PostsSliderSettings } from './settings';
-import type { BlockEditProps } from '@wordpress/blocks';
+import type { BlockEditProps, BlockConfiguration } from '@wordpress/blocks';
 
 interface PostsSliderAttributes {
     postType: string;
@@ -14,34 +15,14 @@ interface PostsSliderAttributes {
     showExcerpt: boolean;
 }
 
-interface BlockAttributes {
-    postType: {
-        type: 'string';
-        default: string;
+type BlockAttributes = {
+    [K in keyof PostsSliderAttributes]: {
+        type: 'string' | 'number' | 'boolean';
+        default: PostsSliderAttributes[K];
     };
-    numberOfPosts: {
-        type: 'number';
-        default: number;
-    };
-    order: {
-        type: 'string';
-        default: string;
-    };
-    showFeaturedImage: {
-        type: 'boolean';
-        default: boolean;
-    };
-    showTitle: {
-        type: 'boolean';
-        default: boolean;
-    };
-    showExcerpt: {
-        type: 'boolean';
-        default: boolean;
-    };
-}
+};
 
-registerBlockType<PostsSliderAttributes>('sliderberg-pro/posts-slider', {
+const blockConfig: BlockConfiguration<PostsSliderAttributes> = {
     title: __('Posts Slider', 'sliderberg-pro'),
     description: __('Create a slider with your posts', 'sliderberg-pro'),
     category: 'sliderberg',
@@ -90,7 +71,7 @@ registerBlockType<PostsSliderAttributes>('sliderberg-pro/posts-slider', {
             </div>
         );
     },
-    save: ({ attributes }: { attributes: PostsSliderAttributes }): JSX.Element => {
+    save: (): JSX.Element => {
         const blockProps = useBlockProps.save({
             className: 'sliderberg-posts-slider-wrapper'
         });
@@ -100,16 +81,18 @@ registerBlockType<PostsSliderAttributes>('sliderberg-pro/posts-slider', {
                 {/* This will be rendered server-side in PHP */}
                 <div 
                     className="sliderberg-posts-slider-placeholder"
-                    data-post-type={attributes.postType}
-                    data-number-of-posts={attributes.numberOfPosts}
-                    data-order={attributes.order}
-                    data-show-featured-image={attributes.showFeaturedImage}
-                    data-show-title={attributes.showTitle}
-                    data-show-excerpt={attributes.showExcerpt}
+                    data-post-type="posts"
+                    data-number-of-posts={5}
+                    data-order="desc"
+                    data-show-featured-image={true}
+                    data-show-title={true}
+                    data-show-excerpt={true}
                 >
                     {__('Posts will be loaded here...', 'sliderberg-pro')}
                 </div>
             </div>
         );
     }
-});
+};
+
+registerBlockType<PostsSliderAttributes>('sliderberg-pro/posts-slider', blockConfig);

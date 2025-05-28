@@ -4,15 +4,25 @@ declare module '@wordpress/blocks' {
         setAttributes: (attributes: Partial<T>) => void;
     }
 
-    export function registerBlockType<T>(name: string, settings: {
+    export interface BlockConfiguration<T> {
         title: string;
         description: string;
         category: string;
         icon: string;
-        attributes: Record<string, any>;
+        parent?: string[];
+        supports?: {
+            inserter?: boolean;
+            [key: string]: any;
+        };
+        attributes: Record<string, {
+            type: string;
+            default: any;
+        }>;
         edit: (props: BlockEditProps<T>) => JSX.Element;
         save: () => JSX.Element | null;
-    }): void;
+    }
+
+    export function registerBlockType<T>(name: string, settings: BlockConfiguration<T>): void;
 
     export function createBlock(name: string, attributes?: Record<string, any>): any;
 } 
