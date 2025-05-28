@@ -3,8 +3,6 @@ import { addFilter } from '@wordpress/hooks';
 import { Icon, grid, plus } from '@wordpress/icons';
 import { ProTypeCard } from '../components/ui/ProTypeCard';
 import type { ReactElement } from 'react';
-import { createBlock } from '@wordpress/blocks';
-import { dispatch, select } from '@wordpress/data';
 
 interface SliderType {
     id: string;
@@ -13,15 +11,6 @@ interface SliderType {
     icon: ReactElement;
     isPro?: boolean;
     isComingSoon?: boolean;
-}
-
-// Declare global window property
-declare global {
-    interface Window {
-        sliderbergPro?: {
-            isLicensed: boolean;
-        };
-    }
 }
 
 // Add pro slider types
@@ -53,31 +42,16 @@ addFilter('sliderberg.sliderTypes', 'sliderberg-pro/addTypes', (types: SliderTyp
     return newTypes;
 });
 
-// Handle type selection for pro types
+// For pro types, allow normal type selection to proceed
+// The actual pro block insertion will be handled by the Edit component
 addFilter('sliderberg.beforeTypeSelect', 'sliderberg-pro/handleTypeSelect', (shouldProceed: boolean, typeId: string) => {
-    console.log('Admin filter running for type:', typeId);
-    
-    if (typeId === 'posts-slider') {
-        console.log('Creating posts slider block');
-        const selectedBlock = select('core/block-editor').getSelectedBlock();
-        console.log('Selected block:', selectedBlock);
-        
-        if (selectedBlock) {
-            const postsSliderBlock = createBlock('sliderberg-pro/posts-slider', {
-                postType: 'posts',
-                numberOfPosts: 5,
-                order: 'desc',
-                showFeaturedImage: true,
-                showTitle: true,
-                showExcerpt: true
-            });
-            console.log('Created posts slider block:', postsSliderBlock);
-
-            dispatch('core/block-editor').replaceBlock(selectedBlock.clientId, postsSliderBlock);
-            console.log('Replaced block');
-            return false;
-        }
+    // For pro types, just let the normal flow proceed
+    // The Edit component will detect the pro type and handle the block insertion
+    if (typeId === 'posts-slider' || typeId === 'woo-products') {
+        console.log('Allowing pro type selection to proceed normally:', typeId);
+        return true; // Allow normal type selection
     }
+    
     return shouldProceed;
 });
 
@@ -87,4 +61,4 @@ addFilter('sliderberg.typeCardContent', 'sliderberg-pro/customizeTypeCard', (car
         return <ProTypeCard type={type} />;
     }
     return card;
-}); 
+});

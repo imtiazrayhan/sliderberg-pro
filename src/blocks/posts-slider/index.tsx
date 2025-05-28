@@ -1,6 +1,6 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
-import { InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { PostsSlider } from '../../components/sliders/PostsSlider';
 import { PostsSliderSettings } from './settings';
 import type { BlockEditProps } from '@wordpress/blocks';
@@ -46,6 +46,10 @@ registerBlockType<PostsSliderAttributes>('sliderberg-pro/posts-slider', {
     description: __('Create a slider with your posts', 'sliderberg-pro'),
     category: 'sliderberg',
     icon: 'admin-post',
+    parent: ['sliderberg/sliderberg'], // This ensures it can only be inserted as a child
+    supports: {
+        inserter: false // Hide from inserter since it's added via type selector
+    },
     attributes: {
         postType: {
             type: 'string',
@@ -73,16 +77,39 @@ registerBlockType<PostsSliderAttributes>('sliderberg-pro/posts-slider', {
         }
     } as BlockAttributes,
     edit: ({ attributes, setAttributes }: BlockEditProps<PostsSliderAttributes>): JSX.Element => {
+        const blockProps = useBlockProps({
+            className: 'sliderberg-posts-slider-wrapper'
+        });
+
         return (
-            <>
+            <div {...blockProps}>
                 <InspectorControls>
                     <PostsSliderSettings attributes={attributes} setAttributes={setAttributes} />
                 </InspectorControls>
                 <PostsSlider attributes={attributes} />
-            </>
+            </div>
         );
     },
-    save: (): null => {
-        return null; // Dynamic block, rendered on the server
+    save: ({ attributes }: { attributes: PostsSliderAttributes }): JSX.Element => {
+        const blockProps = useBlockProps.save({
+            className: 'sliderberg-posts-slider-wrapper'
+        });
+
+        return (
+            <div {...blockProps}>
+                {/* This will be rendered server-side in PHP */}
+                <div 
+                    className="sliderberg-posts-slider-placeholder"
+                    data-post-type={attributes.postType}
+                    data-number-of-posts={attributes.numberOfPosts}
+                    data-order={attributes.order}
+                    data-show-featured-image={attributes.showFeaturedImage}
+                    data-show-title={attributes.showTitle}
+                    data-show-excerpt={attributes.showExcerpt}
+                >
+                    {__('Posts will be loaded here...', 'sliderberg-pro')}
+                </div>
+            </div>
+        );
     }
-}); 
+});
