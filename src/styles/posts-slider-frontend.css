@@ -1,0 +1,340 @@
+/* src/styles/posts-slider-frontend.css */
+/* This file will be processed by webpack to create the frontend CSS */
+
+/* Frontend Posts Slider Styles */
+.sliderberg-posts-slider-wrapper {
+    position: relative;
+    width: 100%;
+    display: block;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.sliderberg-post-slide {
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    margin: 0;
+    width: 100%;
+    position: relative;
+    min-height: 300px;
+    box-sizing: border-box;
+    flex: 0 0 100%;
+}
+
+.sliderberg-post-content {
+    position: relative;
+    z-index: 1;
+    padding: 2rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.sliderberg-post-image {
+    margin-bottom: 1.5rem;
+    width: 100%;
+    max-height: 300px;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.sliderberg-post-image img {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.sliderberg-post-image:hover img {
+    transform: scale(1.05);
+}
+
+.sliderberg-post-title {
+    margin: 0 0 1rem;
+    font-size: 1.75rem;
+    line-height: 1.3;
+    color: #333;
+    font-weight: 600;
+}
+
+.sliderberg-post-title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.sliderberg-post-title a:hover {
+    color: #007cba;
+}
+
+.sliderberg-post-excerpt {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #666;
+    margin: 0 0 1.5rem;
+    flex-grow: 1;
+}
+
+.sliderberg-post-excerpt p {
+    margin: 0 0 1em;
+}
+
+.sliderberg-post-excerpt p:last-child {
+    margin-bottom: 0;
+}
+
+.sliderberg-post-meta {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.sliderberg-post-date {
+    font-size: 0.9rem;
+    color: #888;
+    font-style: italic;
+}
+
+.sliderberg-post-date time {
+    color: inherit;
+}
+
+.sliderberg-read-more {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    background: #007cba;
+    color: #fff !important;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.sliderberg-read-more:hover {
+    background: #005a87;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 124, 186, 0.3);
+}
+
+.sliderberg-read-more:focus {
+    outline: 2px solid #007cba;
+    outline-offset: 2px;
+}
+
+.sliderberg-read-more .screen-reader-text {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* Empty state */
+.sliderberg-posts-slider-empty {
+    padding: 3rem 2rem;
+    text-align: center;
+    background: #f8f9fa;
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    color: #666;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    font-size: 1.1rem;
+}
+
+/* Integration with parent slider */
+.sliderberg-slides-container .sliderberg-posts-slider-wrapper {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* Ensure posts work with slider transitions */
+.sliderberg-slides-container[data-transition-effect="fade"] .sliderberg-post-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.sliderberg-slides-container[data-transition-effect="fade"] .sliderberg-post-slide:first-child {
+    position: relative;
+    opacity: 1;
+}
+
+.sliderberg-slides-container[data-transition-effect="zoom"] .sliderberg-post-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.sliderberg-slides-container[data-transition-effect="zoom"] .sliderberg-post-slide:first-child {
+    position: relative;
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .sliderberg-post-slide {
+        min-height: 250px;
+    }
+
+    .sliderberg-post-content {
+        padding: 1.5rem;
+    }
+
+    .sliderberg-post-title {
+        font-size: 1.5rem;
+    }
+
+    .sliderberg-post-image {
+        max-height: 200px;
+        margin-bottom: 1rem;
+    }
+
+    .sliderberg-post-image img {
+        max-height: 200px;
+    }
+
+    .sliderberg-post-excerpt {
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+    }
+
+    .sliderberg-read-more {
+        padding: 0.65rem 1.25rem;
+        font-size: 0.9rem;
+    }
+
+    .sliderberg-post-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .sliderberg-post-content {
+        padding: 1rem;
+    }
+
+    .sliderberg-post-title {
+        font-size: 1.25rem;
+    }
+
+    .sliderberg-posts-slider-empty {
+        padding: 2rem 1rem;
+        font-size: 1rem;
+    }
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+    .sliderberg-post-content {
+        background: #1a1a1a;
+        color: #e0e0e0;
+    }
+
+    .sliderberg-post-title {
+        color: #ffffff;
+    }
+
+    .sliderberg-post-title a:hover {
+        color: #4fc3f7;
+    }
+
+    .sliderberg-post-excerpt {
+        color: #b0b0b0;
+    }
+
+    .sliderberg-post-meta {
+        border-top-color: #333;
+    }
+
+    .sliderberg-post-date {
+        color: #999;
+    }
+
+    .sliderberg-posts-slider-empty {
+        background: #2a2a2a;
+        border-color: #444;
+        color: #b0b0b0;
+    }
+}
+
+/* Print styles */
+@media print {
+    .sliderberg-post-slide {
+        display: block !important;
+        page-break-inside: avoid;
+        margin-bottom: 2rem;
+    }
+
+    .sliderberg-read-more {
+        display: none;
+    }
+
+    .sliderberg-post-image:hover img {
+        transform: none;
+    }
+}
+
+/* Loading animation for dynamic content */
+@keyframes sliderberg-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.sliderberg-post-slide {
+    animation: sliderberg-fade-in 0.5s ease-out;
+}
+
+/* Focus management for accessibility */
+.sliderberg-posts-slider-wrapper:focus-within .sliderberg-post-slide:not([aria-hidden="true"]) {
+    outline: 2px solid #007cba;
+    outline-offset: 2px;
+    border-radius: 8px;
+}

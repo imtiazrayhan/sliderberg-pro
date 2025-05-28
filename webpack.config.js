@@ -6,7 +6,8 @@ module.exports = {
     entry: {
         'admin': path.resolve(__dirname, 'src/admin/index.tsx'),
         'index': path.resolve(__dirname, 'src/main/index.tsx'),
-        'blocks/posts-slider': path.resolve(__dirname, 'src/blocks/posts-slider/index.tsx')
+        'blocks/posts-slider': path.resolve(__dirname, 'src/blocks/posts-slider/index.tsx'),
+        'posts-slider-frontend': path.resolve(__dirname, 'src/frontend/index.js')
     },
     output: {
         ...defaultConfig.output,
@@ -17,4 +18,4 @@ module.exports = {
         ...defaultConfig.resolve,
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
     },
-}; 
+};

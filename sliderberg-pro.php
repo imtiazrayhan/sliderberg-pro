@@ -32,6 +32,7 @@ function sliderberg_pro_init() {
 
     // Include required files
     require_once SLIDERBERG_PRO_PATH . 'includes/class-sliderberg-pro.php';
+    require_once SLIDERBERG_PRO_PATH . 'includes/class-posts-slider-renderer.php';
 
     // Initialize the plugin
     $pro = Sliderberg_Pro::instance();
@@ -62,7 +63,7 @@ function sliderberg_pro_register_assets() {
         true
     );
 
-    // Register styles
+    // Register editor styles
     wp_register_style(
         'sliderberg-pro-editor',
         SLIDERBERG_PRO_URL . 'build/index.css',
@@ -70,11 +71,29 @@ function sliderberg_pro_register_assets() {
         SLIDERBERG_PRO_VERSION
     );
 
+    // Register frontend styles
     wp_register_style(
         'sliderberg-pro-frontend',
-        SLIDERBERG_PRO_URL . 'build/index.css',
+        SLIDERBERG_PRO_URL . 'build/style-index.css',
         array(),
         SLIDERBERG_PRO_VERSION
+    );
+
+    // Register posts slider frontend styles - this will be compiled by webpack alongside JS
+    wp_register_style(
+        'sliderberg-pro-posts-slider-frontend',
+        SLIDERBERG_PRO_URL . 'build/posts-slider-frontend.css',
+        array(),
+        SLIDERBERG_PRO_VERSION
+    );
+
+    // Register posts slider frontend script
+    wp_register_script(
+        'sliderberg-pro-posts-slider-frontend',
+        SLIDERBERG_PRO_URL . 'build/posts-slider-frontend.js',
+        array(),
+        SLIDERBERG_PRO_VERSION,
+        true
     );
 }
 add_action('init', 'sliderberg_pro_register_assets');
@@ -89,6 +108,39 @@ add_action('enqueue_block_editor_assets', 'sliderberg_pro_editor_assets');
 
 // Enqueue frontend assets
 function sliderberg_pro_frontend_assets() {
-    wp_enqueue_style('sliderberg-pro-frontend');
+    // Only enqueue base frontend styles if we have any sliderberg blocks
+    if (has_block('sliderberg/sliderberg') || has_block('sliderberg-pro/posts-slider')) {
+        wp_enqueue_style('sliderberg-pro-frontend');
+    }
 }
-add_action('wp_enqueue_scripts', 'sliderberg_pro_frontend_assets'); 
+add_action('wp_enqueue_scripts', 'sliderberg_pro_frontend_assets');
+
+/**
+ * Check if Sliderberg base plugin is active
+ */
+function sliderberg_pro_check_dependencies() {
+    if (!is_plugin_active('sliderberg/sliderberg.php') && !function_exists('sliderberg_init')) {
+        add_action('admin_notices', 'sliderberg_pro_dependency_notice');
+        deactivate_plugins(plugin_basename(__FILE__));
+    }
+}
+add_action('admin_init', 'sliderberg_pro_check_dependencies');
+
+/**
+ * Show dependency notice
+ */
+function sliderberg_pro_dependency_notice() {
+    ?>
+    <div class="notice notice-error">
+        <p>
+            <?php 
+            echo sprintf(
+                esc_html__('Sliderberg Pro requires the %sSliderberg base plugin%s to be installed and activated.', 'sliderberg-pro'),
+                '<strong>',
+                '</strong>'
+            ); 
+            ?>
+        </p>
+    </div>
+    <?php
+}
