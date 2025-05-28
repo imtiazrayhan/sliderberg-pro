@@ -40,4 +40,43 @@ function sliderberg_pro_init() {
     add_action('init', [$pro, 'register_hooks']);
     add_action('admin_enqueue_scripts', [$pro, 'enqueue_admin_assets']);
 }
-add_action('plugins_loaded', 'sliderberg_pro_init'); 
+add_action('plugins_loaded', 'sliderberg_pro_init');
+
+// Register scripts and styles
+function sliderberg_pro_register_assets() {
+    wp_register_script(
+        'sliderberg-pro-editor',
+        SLIDERBERG_PRO_URL . 'build/index.js',
+        array('wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-i18n'),
+        SLIDERBERG_PRO_VERSION,
+        true
+    );
+
+    wp_register_style(
+        'sliderberg-pro-editor',
+        SLIDERBERG_PRO_URL . 'build/index.css',
+        array(),
+        SLIDERBERG_PRO_VERSION
+    );
+
+    wp_register_style(
+        'sliderberg-pro-frontend',
+        SLIDERBERG_PRO_URL . 'build/index.css',
+        array(),
+        SLIDERBERG_PRO_VERSION
+    );
+}
+add_action('init', 'sliderberg_pro_register_assets');
+
+// Enqueue editor assets
+function sliderberg_pro_editor_assets() {
+    wp_enqueue_script('sliderberg-pro-editor');
+    wp_enqueue_style('sliderberg-pro-editor');
+}
+add_action('enqueue_block_editor_assets', 'sliderberg_pro_editor_assets');
+
+// Enqueue frontend assets
+function sliderberg_pro_frontend_assets() {
+    wp_enqueue_style('sliderberg-pro-frontend');
+}
+add_action('wp_enqueue_scripts', 'sliderberg_pro_frontend_assets'); 

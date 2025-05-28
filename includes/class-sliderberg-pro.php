@@ -30,58 +30,8 @@ class Sliderberg_Pro {
      * Register WordPress hooks
      */
     public function register_hooks() {
-        // Add pro slider types
-        add_filter('sliderberg_slider_types', [$this, 'add_pro_slider_types']);
-        
-        // Handle type selection
-        add_filter('sliderberg_type_selected', [$this, 'handle_type_selection'], 10, 2);
-        
-        // Customize type card rendering
-        add_filter('sliderberg_type_card', [$this, 'customize_type_card'], 10, 2);
-
         // Add debug log
         error_log('Sliderberg Pro: Hooks registered');
-    }
-
-    /**
-     * Add pro slider types
-     */
-    public function add_pro_slider_types($types) {
-        error_log('Sliderberg Pro: Adding pro types');
-        error_log('Current types: ' . print_r($types, true));
-
-        $pro_types = [
-            [
-                'id' => 'woo-products',
-                'label' => __('WooCommerce Products Slider', 'sliderberg-pro'),
-                'icon' => 'products',
-                'isPro' => true
-            ],
-            [
-                'id' => 'posts-slider',
-                'label' => __('Posts Slider', 'sliderberg-pro'),
-                'icon' => 'posts',
-                'isPro' => true
-            ]
-        ];
-
-        $new_types = array_merge($types, $pro_types);
-        error_log('New types: ' . print_r($new_types, true));
-        return array_merge($types, $pro_types);
-    }
-
-    /**
-     * Handle pro type selection
-     */
-    public function handle_pro_type_selection($shouldProceed, $typeId, $type) {
-        return $shouldProceed;
-    }
-
-    /**
-     * Customize pro type card
-     */
-    public function customize_pro_type_card($content, $type) {
-        return $content;
     }
 
     /**
